@@ -1,0 +1,9 @@
+<view class="list">
+    <view class="list-item" wx:for="{{list}}" wx:key="{{index}}">
+        <view class="flex-1">{{item.num}}号</view>
+        <view class="btn-box">
+            <button size="mini" type="warn">过号</button>
+            <button class="arrived" size="mini" type="primary">已到</button>
+        </view>
+    </view>
+</view>

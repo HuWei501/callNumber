@@ -1,0 +1,11 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/admin/admin"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarTitleText": "叫号系统"
+  },
+  "sitemapLocation": "sitemap.json"
+}

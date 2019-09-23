@@ -1,0 +1,20 @@
+.login {
+    width: 80%;
+    margin-top: 15%;
+}
+.message {
+    margin-top: 50%;
+    text-align: center;
+    color: #333333;
+    line-height: 50rpx;
+}
+.outTime {
+    margin-top: 15%;
+    color: #E64340;
+    text-align: center;
+}
+.wait {
+    height: 200rpx;
+    margin-top: 30rpx;
+    padding-left: 30rpx;
+}

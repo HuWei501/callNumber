@@ -1,0 +1,12 @@
+<!--logs.wxml-->
+<view class="login-container">
+    <view wx:if="{{state === 3}}" class="outTime">
+        您已过号，请重新取号
+    </view>
+    <button wx:if="{{state !== 2}}" class="login" bindtap="getNumber" type="primary">取号</button>
+    <view wx:if="{{state === 2}}" class="message">
+        您的号码为100，当前排在第4位
+        <view>请耐心等待</view>
+        <image class="wait" mode="aspectFit" src="/utils/images/tea.png"></image>
+    </view>
+</view>
