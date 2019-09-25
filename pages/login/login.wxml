@@ -9,6 +9,6 @@
         您的号码是{{mes.number}}号，当前排在第{{mes.queueNumber + 1}}位
         <view>请耐心等待</view>
         <image class="wait" mode="aspectFit" src="/utils/images/tea.png"></image>
-        <button type="primary" class="return" bindtap="returnList">返回列表</button>
     </view>
+    <button type="primary" class="return" bindtap="returnList">返回列表</button>
 </view>

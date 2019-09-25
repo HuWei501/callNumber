@@ -3,8 +3,8 @@
         <view class="flex-1">{{item.number}}号</view>
         <view class="btn-box">
             <button size="mini" type="warn" bindtap="changeState" data-item="{{item}}" data-key="已过号">过号</button>
+            <button size="mini" class="arrived" bindtap="sendMessage" data-item="{{item}}" wx:if="{{!item.pushed}}">通知</button>
             <button class="arrived" size="mini" type="primary" bindtap="changeState" data-item="{{item}}" data-key="已到达">已到</button>
-            <button size="mini" class="arrived" bindtap="sendMessage" data-item="{{item}}">通知</button>
         </view>
     </view>
 </view>

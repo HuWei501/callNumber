@@ -6,20 +6,21 @@ Page({
     },
     onLoad: function (options) {
         const url = options.q ? decodeURIComponent(options.q) : '';
-        console.log(url)
         const name = url ? url.match(/name=(.*)/)[1] : '';
         this.setData({ name });
+        wx.setNavigationBarTitle({
+            title: name
+        });
         this.setTimeInterval();
     },
     setTimeInterval() {
         this.getList();
         setTimeout(() => {
             this.setTimeInterval();
-        }, 15000)
+        }, 10000)
     },
     getList() {
         Ajax.get('/customers', { shop: this.data.name }).then((res) => {
-            console.log(res)
             if (res.statusCode === 200) {
                 const data = res.data;
                 this.setData({ list: data });
@@ -61,9 +62,14 @@ Page({
                 keyword3: { value: time }
             }
         };
-        console.log(query)
         Ajax.postJson('/wxaTmplMsgs', query).then((res) => {
-            console.log(res)
+            if (res.statusCode === 200) {
+                this.getList();
+                wx.showToast({
+                    title: '通知成功',
+                    icon: 'success'
+                });
+            }
         }).catch((err) => {
             console.log(err)
         });

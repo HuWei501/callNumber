@@ -14,20 +14,18 @@ Page({
             name = options.name
         } else {
             const url = options.q ? decodeURIComponent(options.q) : '';
-            console.log(url)
             name = url ? url.match(/name=(.*)/)[1] : '';
         }
-        console.log(name)
-        this.setData({ name: options.name });
+        wx.setNavigationBarTitle({
+            title: name
+        });
+        this.setData({ name });
         setTimeout(() => {
-            this.setTimeInterval()
+            this.whetherTakeNumber();
         }, 1000);
     },
-    setTimeInterval() {
+    onShow() {
         this.whetherTakeNumber();
-        setTimeout(() => {
-            this.setTimeInterval();
-        }, 30000);
     },
     whetherTakeNumber() {
         Ajax.get('/me', { shop: this.data.name }).then((res) => {
@@ -53,7 +51,7 @@ Page({
             Ajax.postJson('/customers', {
                 wechatOpenid: info.openid,
                 shop: this.data.name,
-                formId,
+                formId
             }).then((res) => {
                 if (res.statusCode === 200) {
                     this.whetherTakeNumber();

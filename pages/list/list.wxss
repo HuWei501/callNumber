@@ -1,12 +1,23 @@
 .list-item {
     display: flex;
     align-items: center;
-    padding: 10rpx 20rpx;
+    padding: 20rpx 20rpx;
     border-bottom: 2rpx solid #cccccc;
+    color: #666666;
 }
 .flex-1 {
     flex: 1;
 }
 .bold {
     font-weight: bold;
+    color: #333333;
+}
+.green {
+    color: #67C23A;
+}
+.yellow {
+    color: #E6A23C;
+}
+.red {
+    color: #F56C6C;
 }
