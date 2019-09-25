@@ -48,15 +48,22 @@
 					"id": 0,
 					"name": "管理员",
 					"pathName": "pages/admin/admin",
-					"query": "",
+					"query": "q=http%3A%2F%2Ftest.fangliaoyun.com%2Ftakenumber%2Fadmin%2F%3Fname%3D%E5%B8%95%E5%B0%BC%E5%B0%BC%E9%9D%A2%E5%8C%85",
 					"scene": 1011
 				},
 				{
-					"id": -1,
-					"name": "二维码测试",
+					"id": 1,
+					"name": "二维码测试-顾客",
 					"pathName": "pages/login/login",
-					"query": "admin=true",
+					"query": "name=帕尼尼面包",
 					"scene": 1011
+				},
+				{
+					"id": 2,
+					"name": "列表",
+					"pathName": "pages/list/list",
+					"query": "",
+					"scene": null
 				}
 			]
 		}

@@ -1,12 +1,14 @@
-<!--logs.wxml-->
 <view class="login-container">
     <view wx:if="{{state === 3}}" class="outTime">
         您已过号，请重新取号
     </view>
-    <button wx:if="{{state !== 2}}" class="login" bindtap="getNumber" type="primary">取号</button>
+    <form wx:if="{{state === 1 || state === 3}}" name="pushMsgFm" report-submit="true" bindsubmit="getNumber">
+        <button form-type="submit" class="login" type="primary">取号</button>
+    </form>
     <view wx:if="{{state === 2}}" class="message">
-        您的号码为100，当前排在第4位
+        您的号码是{{mes.number}}号，当前排在第{{mes.queueNumber + 1}}位
         <view>请耐心等待</view>
         <image class="wait" mode="aspectFit" src="/utils/images/tea.png"></image>
+        <button type="primary" class="return" bindtap="returnList">返回列表</button>
     </view>
 </view>

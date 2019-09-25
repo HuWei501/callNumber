@@ -1,4 +1,5 @@
-const Ajax = require('./ajax.js');
+const Ajax = require('./ajax');
+const Base64 = require('./base64.min').Base64;
 
 const checkAndLogin = () => {
     return new Promise((resolve, reject) => {
@@ -21,19 +22,28 @@ const checkAndLogin = () => {
     })
 }
 
+const getJwtInfo = () => {
+    let jwt = wx.getStorageSync('jwt');
+    return JSON.parse(Base64.atob(jwt.split('.')[1]));
+}
+
 const wxLogin = (resolve) => {
     wx.login({
         success: response => {
-            Ajax.get('open/wxaSessionKeys', {code: response.code}).then((res) => {
-                let data = res.data;
-                wx.setStorageSync('openid', data.openid);
-                wx.setStorageSync('session_key', data.session_key);
-                resolve();
+            Ajax.get('/jwts', {
+                code: response.code
+            }).then((res) => {
+                if (res.statusCode === 200) {
+                    const data = res.data;
+                    wx.setStorageSync('jwt', data);
+                    resolve();
+                }
             });
         }
     });
 }
 
 module.exports = {
-    checkAndLogin
+    checkAndLogin,
+    getJwtInfo
 }

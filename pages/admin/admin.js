@@ -1,69 +1,71 @@
-// pages/admin/admin.js
+const Ajax = require('../../utils/js/ajax.js');
 Page({
-  data: {
-    list: [
-        {
-          num: 100
-        },
-        {
-          num: 101
-        }
-    ]
-  },
-
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function (options) {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
-  }
-})
+    data: {
+        list: [],
+        name: ''
+    },
+    onLoad: function (options) {
+        const url = options.q ? decodeURIComponent(options.q) : '';
+        console.log(url)
+        const name = url ? url.match(/name=(.*)/)[1] : '';
+        this.setData({ name });
+        this.setTimeInterval();
+    },
+    setTimeInterval() {
+        this.getList();
+        setTimeout(() => {
+            this.setTimeInterval();
+        }, 15000)
+    },
+    getList() {
+        Ajax.get('/customers', { shop: this.data.name }).then((res) => {
+            console.log(res)
+            if (res.statusCode === 200) {
+                const data = res.data;
+                this.setData({ list: data });
+            } else if (res.statusCode === 204) {
+                this.setData({ list: [] });
+            }
+        }).catch((err) => {
+            console.log(err);
+        })
+    },
+    changeState(e) {
+        const item = e.target.dataset.item;
+        const key = e.target.dataset.key;
+        Ajax.putJson('/customers/' + item.id, {
+            formId: item.formId,
+            status: key
+        }).then((res) => {
+            if (res.statusCode === 200) {
+                this.getList();
+            }
+        }).catch((err) => {
+            console.log(err);
+        })
+    },
+    sendMessage(e) {
+        const item = e.target.dataset.item;
+        const _date = new Date();
+        let hour = _date.getHours();
+        if (hour < 10) hour = '0' + hour;
+        let minute = _date.getMinutes();
+        if (minute < 10) minute = '0' + minute;
+        const time = `${hour}:${minute}`;
+        const query = {
+            id: item.id,
+            page: 'pages/login/login',
+            data: {
+                keyword1: { value: this.data.name },
+                keyword2: { value: '请您及时过来取餐' },
+                keyword3: { value: time }
+            }
+        };
+        console.log(query)
+        Ajax.postJson('/wxaTmplMsgs', query).then((res) => {
+            console.log(res)
+        }).catch((err) => {
+            console.log(err)
+        });
+    }
+});

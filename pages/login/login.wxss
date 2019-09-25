@@ -3,7 +3,7 @@
     margin-top: 15%;
 }
 .message {
-    margin-top: 50%;
+    margin-top: 45%;
     text-align: center;
     color: #333333;
     line-height: 50rpx;
@@ -17,4 +17,8 @@
     height: 200rpx;
     margin-top: 30rpx;
     padding-left: 30rpx;
+}
+.return {
+    width: 80%;
+    margin-top: 30rpx;
 }

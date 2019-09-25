@@ -1,0 +1,13 @@
+<view class="list" wx:if="{{list.length}}">
+    <view class="list-item">
+        <view class="flex-1 bold">餐厅名称</view>
+        <view class="flex-1 bold">号码</view>
+        <view class="flex-1 bold">排队情况</view>
+    </view>
+    <view class="list-item" wx:for="{{list}}" wx:key="{{index}}" bindtap="goinDetail" data-name="{{item.shop}}">
+        <view class="flex-1">{{item.shop}}</view>
+        <view class="flex-1">{{item.number}}号</view>
+        <view class="flex-1">当前排在第{{item.queueNumber + 1}}位</view>
+    </view>
+</view>
+<view wx:else style="text-align: center;margin-top: 30rpx;">请扫描餐厅取号二维码</view>

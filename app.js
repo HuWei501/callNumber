@@ -27,10 +27,9 @@ App({
         });
         // 判断是否存在token,不存在则登录
         wx.getStorage({
-            key: 'token',
+            key: 'jwt',
             success(res) {
                 if (res.data) {
-                    if (e.scene === 1011 && e.query.admin) wx.reLaunch({ url: '/pages/admin/admin' });
                 } else {
                     util.checkAndLogin();
                 }
@@ -40,4 +39,4 @@ App({
             }
         });
     }
-})
+});

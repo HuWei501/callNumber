@@ -3,82 +3,78 @@ const util = require('../../utils/js/loginUtil.js');
 
 Page({
     data: {
-        loading: true,
-        state: 1 // 1 未取号  2 已取号  3 已过号
+        state: 0, // 1 未取号  2 已取号  3 已过号
+        mes: null,
+        name: '',
+        create: false
     },
-    onLoad() {},
-    getNumber() {
+    onLoad(options) {
+        let name;
+        if (options.name) {
+            name = options.name
+        } else {
+            const url = options.q ? decodeURIComponent(options.q) : '';
+            console.log(url)
+            name = url ? url.match(/name=(.*)/)[1] : '';
+        }
+        console.log(name)
+        this.setData({ name: options.name });
         setTimeout(() => {
-            this.setData({ state: 2 });
+            this.setTimeInterval()
         }, 1000);
     },
-    getPhoneNumber(e) {
-        if (e.detail.iv) {
-            wx.showLoading({ title: '正在授权' });
-            this.setData({ loading: true });
-            util.checkAndLogin().then(() => {
-                let session_key = wx.getStorageSync('session_key');
-                let [encryptedData, iv] = [e.detail.encryptedData, e.detail.iv];
-                Ajax.get('open/wxaDecryptedData', {
-                    sessionKey: session_key,
-                    iv: iv,
-                    encryptedData: encryptedData
-                }).then((res) => {
-                    let phone = res.data.purePhoneNumber;
-                    this.checkUser(phone);
-                }).catch((err) => {
-                    wx.showToast({
-                        title: '授权出错',
-                        icon: 'none'
-                    });
-                    this.setData({ loading: false });
+    setTimeInterval() {
+        this.whetherTakeNumber();
+        setTimeout(() => {
+            this.setTimeInterval();
+        }, 30000);
+    },
+    whetherTakeNumber() {
+        Ajax.get('/me', { shop: this.data.name }).then((res) => {
+            if (res.statusCode === 200) {
+                const data = res.data;
+                let state = 2;
+                if (data.status === '已过号') state = 3;
+                if (data.status === '已到达') state = 1;
+                this.setData({
+                    state,
+                    mes: data
                 });
+            }
+        }).catch((err) => {
+            console.error(err);
+            this.setData({ state: 1, create: true });
+        })
+    },
+    getNumber(e) {
+        const formId = e.detail.formId;
+        const info = util.getJwtInfo();
+        if (this.data.create) {
+            Ajax.postJson('/customers', {
+                wechatOpenid: info.openid,
+                shop: this.data.name,
+                formId,
+            }).then((res) => {
+                if (res.statusCode === 200) {
+                    this.whetherTakeNumber();
+                }
+            }).catch((err) => {
+                console.error(err)
+            });
+        } else {
+            Ajax.putJson('/customers/' + this.data.mes.id, {
+                status: '排队中',
+                formId
+            }).then((res) => {
+                if (res.statusCode === 200) {
+                    this.whetherTakeNumber();
+                }
+            }).catch((err) => {
+                console.error(err)
             });
         }
     },
-    checkUser(tel) {
-        if (tel === '18258172071') tel = '15505090507';
-        Ajax.get('open/staffUsers/' + tel).then((res) => {
-            if (res.statusCode === 200) this.bindAccount(tel);
-        }).catch((err) => {
-            if (err.statusCode === 404) {
-                wx.hideLoading();
-                this.setData({ loading: false });
-                wx.showModal({
-                    title: '授权失败',
-                    content: '您还不是放疗云用户，请联系科室管理员',
-                    confirmColor: '#000',
-                    showCancel: false,
-                    confirmText: '关闭'
-                })
-            }
-        })
-    },
-    bindAccount(tel) {
-        let openid = wx.getStorageSync('openid');
-        Ajax.put(`open/staffUsers/${tel}/${openid}`).then((res) => {
-            if (res.statusCode === 200) {
-                wx.setStorageSync('phoneNum', tel);
-                this.getAccessToken(openid);
-            }
-        })
-    },
-    getAccessToken(openid) {
-        Ajax.post('oauth/token', {
-            grant_type: 'password',
-            password: 'rtc-wxa',
-            username: openid
-        }).then((res) => {
-            if (res.statusCode === 200) {
-                wx.setStorage({
-                    key: 'token',
-                    data: res.data.access_token,
-                    success() {
-                        wx.hideLoading();
-                        wx.reLaunch({ url: '/pages/clinical/clinical' });
-                    }
-                })
-            }
-        })
+    returnList() {
+        wx.reLaunch({ url: '/pages/list/list' });
     }
-})
+});

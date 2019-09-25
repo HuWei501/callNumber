@@ -1,20 +1,14 @@
-// const basicUrl = 'http://192.168.1.30:8443/';
-const basicUrl = 'https://api.fangliaoyun.com/';
+const basicUrl = 'http://192.168.1.30:8443';
+// const basicUrl = 'https://apit.fangliaoyun.com';
 
 const ajaxPromise = ({ url, query, params, method, json }) => {
     let header = Object.create(null);
-    let token = wx.getStorageSync('token');
+    let jwt = wx.getStorageSync('jwt');
     if ((method === 'post' || method === 'put') && !json) {
         header['content-type'] = 'application/x-www-form-urlencoded';
     }
-    if (url.indexOf('oauth/') >= 0) {
-        header['Authorization'] ='Basic cnRjOnJ0Y3NlY3JldA==';
-    } else if (url.indexOf('open/') < 0) {
-        if (!token) {
-            wx.reLaunch({ url: '/pages/login/login' });
-            return;
-        }
-        header['Authorization'] = 'bearer ' + token;
+    if (url.indexOf('jwts') === -1) {
+        header['Authorization'] = jwt;
     }
     if (params) {
         let str = '';
@@ -26,7 +20,7 @@ const ajaxPromise = ({ url, query, params, method, json }) => {
     return new Promise((resolve, reject) => {
         sendRequest(url, query, method, header, resolve, reject);
     });
-}
+};
 
 const sendRequest = (url, query, method, header, resolve, reject) => {
     wx.request({
@@ -38,19 +32,19 @@ const sendRequest = (url, query, method, header, resolve, reject) => {
             if (200 <= res.statusCode && res.statusCode < 300) {
                 resolve(res);
             } else {
-                if (res.statusCode === 401 && res.data.error === 'invalid_token') {
-                    let openid = wx.getStorageSync('openid');
-                    Ajax.post('oauth/token', {
-                        grant_type: 'password',
-                        password: 'rtc-wxa',
-                        username: openid
-                    }).then((res1) => {
-                        if (res1.statusCode === 200) {
-                            wx.setStorageSync('token', res1.data.access_token);
-                            header['Authorization'] = 'bearer ' + res1.data.access_token;
-                            sendRequest(url, query, method, header, resolve, reject);
+                if (res.statusCode === 403 && res.data.message === 'Invalid JWT') {
+                    wx.login({
+                        success: response => {
+                            Ajax.get('/jwts', {code: response.code}).then((res1) => {
+                                if (res1.statusCode === 200) {
+                                    let data = res1.data;
+                                    wx.setStorageSync('jwt', data);
+                                    header['Authorization'] = data;
+                                    sendRequest(url, query, method, header, resolve, reject);
+                                }
+                            });
                         }
-                    })
+                    });
                 } else {
                     reject(res);
                 }
@@ -60,7 +54,7 @@ const sendRequest = (url, query, method, header, resolve, reject) => {
             reject(res);
         }
     })
-}
+};
 
 const Ajax = {
     get(url, query) {
