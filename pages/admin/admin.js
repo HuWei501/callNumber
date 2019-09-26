@@ -2,7 +2,8 @@ const Ajax = require('../../utils/js/ajax.js');
 Page({
     data: {
         list: [],
-        name: ''
+        name: '',
+        time: ''
     },
     onLoad: function (options) {
         const url = options.q ? decodeURIComponent(options.q) : '';
@@ -14,10 +15,10 @@ Page({
         this.setTimeInterval();
     },
     setTimeInterval() {
-        this.getList();
+        if (new Date().getTime() - this.data.time >= 10000) this.getList();
         setTimeout(() => {
             this.setTimeInterval();
-        }, 10000)
+        }, 1000)
     },
     onPullDownRefresh: function() {
         this.getList();
@@ -25,12 +26,12 @@ Page({
     getList() {
         wx.showLoading({ title: '加载中' });
         Ajax.get('/customers', { shop: this.data.name }).then((res) => {
-            if (res.statusCode === 200) {
-                const data = res.data;
-                this.setData({ list: data });
-            } else if (res.statusCode === 204) {
-                this.setData({ list: [] });
-            }
+            let arr = [];
+            if (res.statusCode === 200) arr = res.data;
+            this.setData({
+                list: arr,
+                time: new Date().getTime()
+            });
             wx.stopPullDownRefresh();
             wx.hideLoading();
         }).catch((err) => {

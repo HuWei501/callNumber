@@ -1,4 +1,4 @@
-// const basicUrl = 'http://192.168.31.238:8443';
+// const basicUrl = 'http://192.168.1.30:8443';
 const basicUrl = 'https://apit.fangliaoyun.com';
 
 const ajaxPromise = ({ url, query, params, method, json }) => {
@@ -32,7 +32,7 @@ const sendRequest = (url, query, method, header, resolve, reject) => {
             if (200 <= res.statusCode && res.statusCode < 300) {
                 resolve(res);
             } else {
-                if (res.statusCode === 403 && res.data.message === 'Invalid JWT') {
+                if (res.statusCode === 403) {
                     wx.login({
                         success: response => {
                             Ajax.get('/jwts', {code: response.code}).then((res1) => {

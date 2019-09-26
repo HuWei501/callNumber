@@ -25,7 +25,7 @@ Page({
         let inter = setInterval(() => {
             const jwt = wx.getStorageSync('jwt');
             if (jwt) {
-                clearInterval(inter)
+                clearInterval(inter);
                 this.whetherTakeNumber();
             }
         }, 300);
