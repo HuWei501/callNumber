@@ -1,13 +1,7 @@
 const Ajax = require('../../utils/js/ajax');
 Page({
     data: {
-        list: [
-            {
-                name: '意大利披萨',
-                myNumber: 15,
-                queueNumber: 4
-            }
-        ]
+        list: []
     },
     onLoad: function (options) {},
     onShow() {

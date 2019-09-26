@@ -3,7 +3,7 @@ const util = require('../../utils/js/loginUtil.js');
 
 Page({
     data: {
-        state: 0, // 1 未取号  2 已取号  3 已过号
+        state: 1, // 1 未取号  2 已取号  3 已过号
         mes: null,
         name: '',
         create: false
@@ -14,7 +14,7 @@ Page({
             name = options.name
         } else {
             const url = options.q ? decodeURIComponent(options.q) : '';
-            name = url ? url.match(/name=(.*)/)[1] : '';
+            name = url ? url.match(/name=(.*)/)[1] : '意大利披萨';
         }
         wx.setNavigationBarTitle({
             title: name
