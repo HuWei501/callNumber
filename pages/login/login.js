@@ -20,14 +20,21 @@ Page({
             title: name
         });
         this.setData({ name });
-        setTimeout(() => {
-            this.whetherTakeNumber();
-        }, 1000);
     },
     onShow() {
+        let inter = setInterval(() => {
+            const jwt = wx.getStorageSync('jwt');
+            if (jwt) {
+                clearInterval(inter)
+                this.whetherTakeNumber();
+            }
+        }, 300);
+    },
+    onPullDownRefresh: function() {
         this.whetherTakeNumber();
     },
     whetherTakeNumber() {
+        wx.showLoading({ title: '加载中' });
         Ajax.get('/me', { shop: this.data.name }).then((res) => {
             if (res.statusCode === 200) {
                 const data = res.data;
@@ -39,8 +46,12 @@ Page({
                     mes: data
                 });
             }
+            wx.stopPullDownRefresh();
+            wx.hideLoading();
         }).catch((err) => {
             console.error(err);
+            wx.stopPullDownRefresh();
+            wx.hideLoading();
             this.setData({ state: 1, create: true });
         })
     },

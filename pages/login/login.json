@@ -1,3 +1,4 @@
 {
-    "navigationBarTitleText": "取号"
+    "navigationBarTitleText": "取号",
+    "enablePullDownRefresh": true
 }

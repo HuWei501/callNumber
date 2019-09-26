@@ -19,7 +19,11 @@ Page({
             this.setTimeInterval();
         }, 10000)
     },
+    onPullDownRefresh: function() {
+        this.getList();
+    },
     getList() {
+        wx.showLoading({ title: '加载中' });
         Ajax.get('/customers', { shop: this.data.name }).then((res) => {
             if (res.statusCode === 200) {
                 const data = res.data;
@@ -27,8 +31,12 @@ Page({
             } else if (res.statusCode === 204) {
                 this.setData({ list: [] });
             }
+            wx.stopPullDownRefresh();
+            wx.hideLoading();
         }).catch((err) => {
             console.log(err);
+            wx.stopPullDownRefresh();
+            wx.hideLoading();
         })
     },
     changeState(e) {
