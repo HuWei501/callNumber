@@ -3,7 +3,7 @@ const util = require('../../utils/js/loginUtil.js');
 
 Page({
     data: {
-        state: 1, // 1 未取号  2 已取号  3 已过号
+        state: 0, // 1 未取号  2 已取号  3 已过号
         mes: null,
         name: '',
         create: false
@@ -22,6 +22,7 @@ Page({
         this.setData({ name });
     },
     onShow() {
+        wx.showLoading({ title: '加载中' });
         let inter = setInterval(() => {
             const jwt = wx.getStorageSync('jwt');
             if (jwt) {
@@ -34,7 +35,6 @@ Page({
         this.whetherTakeNumber();
     },
     whetherTakeNumber() {
-        wx.showLoading({ title: '加载中' });
         Ajax.get('/me', { shop: this.data.name }).then((res) => {
             if (res.statusCode === 200) {
                 const data = res.data;

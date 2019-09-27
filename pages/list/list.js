@@ -5,6 +5,7 @@ Page({
     },
     onLoad: function (options) {},
     onShow() {
+        wx.showLoading({ title: '加载中' });
         let inter = setInterval(() => {
             const jwt = wx.getStorageSync('jwt');
             if (jwt) {
@@ -17,7 +18,6 @@ Page({
         this.getList();
     },
     getList() {
-        wx.showLoading({ title: '加载中' });
         Ajax.get('/me').then((res) => {
             if (res.statusCode === 200) {
                 const data = res.data;

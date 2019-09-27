@@ -64,7 +64,6 @@ Page({
         const time = `${hour}:${minute}`;
         const query = {
             id: item.id,
-            page: 'pages/login/login',
             data: {
                 keyword1: { value: this.data.name },
                 keyword2: { value: '请您及时过来取餐' },
