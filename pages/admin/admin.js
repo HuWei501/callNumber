@@ -7,7 +7,7 @@ Page({
     },
     onLoad: function (options) {
         const url = options.q ? decodeURIComponent(options.q) : '';
-        const name = url ? url.match(/name=(.*)/)[1] : '';
+        const name = url ? url.match(/name=(.*)/)[1] : '意大利披萨';
         this.setData({ name });
         wx.setNavigationBarTitle({
             title: name
